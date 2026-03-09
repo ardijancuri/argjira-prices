@@ -3,40 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Argjira • Price Board</title>
+  <title>Argjira • Tabela e Çmimeve</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    :root{--bg:#f7f5ef;--panel:#fffaf2;--text:#1f2a37;--muted:#6b7280;--border:#e7decd;--gold:#c7921f;--gold-soft:#f7ebcf;--glass:rgba(255,250,242,.92);--buy:#0e9f6e;--sell:#dc2626}
+    :root{--bg:#e9dfd1;--sand:#f5eee5;--panel:rgba(255,250,244,.84);--panel-strong:rgba(255,248,240,.94);--text:#1f1b17;--muted:#6f665d;--line:rgba(114,90,54,.18);--brand:#2f6666;--brand-deep:#173b3a;--gold:#bb9362;--buy:#1d7c62;--sell:#b44242;--shadow:0 24px 64px rgba(31,27,23,.16)}
     *{box-sizing:border-box}
-    html,body{min-height:100%;background:#f1ecdf}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;background:linear-gradient(180deg,#fbf8f1 0%,#f1ecdf 100%);background-repeat:no-repeat;background-size:cover;background-attachment:fixed;color:var(--text)}
-    .wrap{max-width:1160px;margin:0 auto;padding:26px 18px 30px}
-    .top{display:flex;justify-content:flex-start;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+    html,body{min-height:100%;background:var(--bg)}
+    body{margin:0;font-family:"Manrope","Segoe UI",sans-serif;min-height:100vh;background:
+      radial-gradient(circle at top left, rgba(255,255,255,.75) 0%, rgba(255,255,255,0) 36%),
+      linear-gradient(135deg, rgba(47,102,102,.14) 0%, rgba(233,223,209,0) 34%),
+      linear-gradient(180deg, #f7f0e7 0%, #eadfce 100%);
+      color:var(--text)}
+    body::before{content:"";position:fixed;inset:0;background:
+      linear-gradient(180deg, rgba(245,238,229,.9) 0%, rgba(233,223,209,.96) 100%),
+      url("argjira bg image.jpg") center/cover no-repeat;mix-blend-mode:multiply;opacity:.33;pointer-events:none}
+    .wrap{position:relative;max-width:1240px;margin:0 auto;padding:28px 18px 36px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px}
     .brand{display:flex;align-items:center;justify-content:flex-start}
-    .status-bottom-wrap{display:flex;justify-content:center;margin:16px 0 0}
-    .live-status{height:34px;line-height:1;margin:0;color:#2F6666;font-size:12px;background:var(--panel);display:inline-flex;align-items:center;padding:0 12px;border:1px solid var(--border);border-radius:999px;box-shadow:0 2px 8px rgba(15,23,42,.04);font-weight:600;letter-spacing:.02em;white-space:nowrap}
-    .grid{display:grid;grid-template-columns:1fr;gap:16px}
-    .card{background:var(--glass);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 12px 28px rgba(22,34,55,.07);padding:0 10px 10px}
-    .head{padding:14px 8px 6px;font-size:13px;color:var(--muted);background:transparent;font-weight:600}
+    .live-status{min-height:38px;line-height:1;margin:0;color:var(--brand);font-size:12px;background:rgba(255,255,255,.7);backdrop-filter:blur(16px);display:inline-flex;align-items:center;padding:0 14px;border:1px solid rgba(47,102,102,.14);border-radius:999px;box-shadow:0 10px 24px rgba(23,59,58,.08);font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+    .shell{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:stretch}
+    .hero{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:480px;padding:28px;border-radius:32px;overflow:hidden;box-shadow:var(--shadow);background:
+      linear-gradient(180deg, rgba(20,20,20,.08) 0%, rgba(20,20,20,.58) 100%),
+      url("argjira bg image.jpg") center 32%/cover no-repeat}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg, rgba(47,102,102,.4) 0%, rgba(47,102,102,0) 42%);pointer-events:none}
+    .hero-copy,.board{position:relative;z-index:1}
+    .hero h1{margin:0 0 12px;max-width:10ch;font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(2.6rem,5vw,4.5rem);line-height:.94;font-weight:600;letter-spacing:-.03em;color:#fffaf5}
+    .hero p{max-width:34rem;margin:0;color:rgba(255,245,235,.82);font-size:15px;line-height:1.7}
+    .hero-copy{display:flex;flex-direction:column;align-items:flex-start;height:100%}
+    .hero-body{margin-top:auto;width:100%;}
+    .hero-meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:24px;width:100%}
+    .metric{width:100%;padding:16px 18px;border-radius:22px;background:rgba(255,250,244,.12);border:1px solid rgba(255,250,244,.18);backdrop-filter:blur(14px)}
+    .metric-label{display:block;margin-bottom:8px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,245,235,.66);font-weight:700}
+    .metric-value{display:block;font-size:24px;line-height:1.05;color:#fffaf5;font-weight:700}
+    .board{background:linear-gradient(180deg, var(--panel) 0%, var(--panel-strong) 100%);border:1px solid rgba(255,250,244,.68);border-radius:32px;overflow:hidden;box-shadow:var(--shadow);backdrop-filter:blur(24px)}
+    .board-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;padding:26px 26px 18px;border-bottom:1px solid var(--line)}
+    .board-kicker{display:block;margin-bottom:8px;color:var(--brand);font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+    .board h2{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-size:42px;line-height:.95;font-weight:600;letter-spacing:-.03em}
+    .table-wrap{padding:14px 26px}
     table{width:100%;border-collapse:separate;border-spacing:0 10px}
-    thead th{padding:0 12px 2px;border:none;text-align:left;font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
-    thead th:nth-child(2), thead th:nth-child(3){text-align:center}
-    tbody td{padding:13px 12px;text-align:left;background:var(--panel);border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-variant-numeric:tabular-nums}
-    tbody td:first-child{border-left:1px solid var(--border);border-top-left-radius:12px;border-bottom-left-radius:12px;font-weight:700}
-    tbody td:last-child{border-right:1px solid var(--border);border-top-right-radius:12px;border-bottom-right-radius:12px}
-    tbody tr:hover td{background:#fffcf4;border-color:#e7d9bd}
-    tbody td:nth-child(2), tbody td:nth-child(3){text-align:center}
-    tbody td:nth-child(2){color:var(--buy);font-weight:700}
-    tbody td:nth-child(3){color:var(--sell);font-weight:700}
-    .asset{font-weight:700;color:var(--text)}
+    thead th{padding:0 16px 4px;border:none;text-align:left;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+    thead th:nth-child(2), thead th:nth-child(3){text-align:left}
+    tbody td{padding:16px;text-align:left;background:rgba(255,255,255,.72);border-top:1px solid rgba(114,90,54,.12);border-bottom:1px solid rgba(114,90,54,.12);font-variant-numeric:tabular-nums;transition:transform .2s ease,background .2s ease,border-color .2s ease}
+    tbody td:first-child{border-left:1px solid rgba(114,90,54,.12);border-top-left-radius:18px;border-bottom-left-radius:18px;font-weight:700}
+    tbody td:last-child{border-right:1px solid rgba(114,90,54,.12);border-top-right-radius:18px;border-bottom-right-radius:18px}
+    tbody tr:hover td{background:#fffdf9;border-color:rgba(187,147,98,.32);transform:translateY(-1px)}
+    tbody td:nth-child(2), tbody td:nth-child(3){text-align:left}
+    tbody td:nth-child(2){color:var(--buy);font-weight:800}
+    tbody td:nth-child(3){color:var(--sell);font-weight:800}
+    .asset{font-weight:800;color:var(--text);letter-spacing:.01em}
     .num{font-variant-numeric:tabular-nums}
-    .price-cell{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-width:98px}
+    .price-cell{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px;min-width:112px}
     .price-val{display:inline-block}
-    .trend{display:inline-flex;align-items:center;justify-content:center;width:12px;font-size:11px;line-height:1;margin:0;vertical-align:middle}
-    .trend.up{color:#16a34a}
-    .trend.down{color:#dc2626}
-    .trend.flat{color:#9aa7bd}
-    @media (max-width:900px){.wrap{padding:20px 12px 24px}.card{padding:0 8px 8px}.top{flex-wrap:wrap;align-items:center}}
-    @media (max-width:520px){.live-status{height:32px;padding:0 10px;font-size:11px}tbody td{padding:11px 10px}thead th{padding:0 10px 2px}.price-cell{min-width:82px;gap:4px}}
+    .trend{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;line-height:1;margin:0;vertical-align:middle;background:rgba(114,90,54,.08);border:1px solid rgba(114,90,54,.1);flex:0 0 28px}
+    .trend svg{width:16px;height:16px;display:block;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+    .trend.up{color:#168a55;background:rgba(22,138,85,.12);border-color:rgba(22,138,85,.18)}
+    .trend.down{color:#c03939;background:rgba(192,57,57,.12);border-color:rgba(192,57,57,.18)}
+    .trend.flat{color:#7c8aa0;background:rgba(124,138,160,.12);border-color:rgba(124,138,160,.18)}
+    @media (max-width:1080px){.shell{grid-template-columns:1fr}.hero{min-height:380px}.hero h1{max-width:none}.board-head{align-items:flex-start}}
+    @media (max-width:720px){.wrap{padding:16px 12px 24px}.hero,.board{border-radius:24px}.hero{padding:20px;min-height:320px}.hero-meta{grid-template-columns:1fr}.board-head{padding:22px 18px 16px}.board h2{font-size:34px}.table-wrap{padding:10px}}
+    @media (max-width:520px){.live-status{min-height:34px;padding:0 11px;font-size:11px}.hero p,.board p{font-size:13px}thead th{padding:0 12px 4px}tbody td{padding:13px 12px;font-size:13px}.price-cell{min-width:86px;gap:6px}.trend{width:24px;height:24px;flex-basis:24px}.trend svg{width:14px;height:14px}}
   </style>
 </head>
 <body>
@@ -49,20 +76,42 @@
           <path d="M95.609 6.25606H98.7038L97.15 3.50985L95.609 6.25606ZM96.1943 0.678036H98.102L103.5 10.2879H100.971L99.5731 7.84426H94.7283L93.3662 10.2879H90.8566L96.1943 0.678036Z"></path>
         </svg>
       </div>
-    </div>
-
-    <div class="grid">
-      <div class="card">
-        <div class="head" id="info1">Vetëm për informim</div>
-        <table>
-          <thead><tr><th></th><th id="buy1">Blerje</th><th id="sell1">Shitje</th></tr></thead>
-          <tbody id="tbody1"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="status-bottom-wrap">
       <div id="liveStatus" class="live-status">Përditësuar --:--:--</div>
+    </div>
+
+    <div class="shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <h1>Çmimore e Metaleve të Çmuara</h1>
+          <div class="hero-body">
+            <div class="hero-meta">
+              <div class="metric">
+                <span class="metric-label">Rifreskimi</span>
+                <span class="metric-value">15 sek</span>
+              </div>
+              <div class="metric">
+                <span class="metric-label">Çmime aktive</span>
+                <span class="metric-value">5 çmime</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="board">
+        <div class="board-head">
+          <div>
+            <span class="board-kicker">Pasqyra e Tregut</span>
+            <h2>Çmimet Aktuale</h2>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th></th><th id="buy1">Blerje</th><th id="sell1">Shitje</th></tr></thead>
+            <tbody id="tbody1"></tbody>
+          </table>
+        </div>
+      </section>
     </div>
   </div>
 
@@ -86,6 +135,16 @@
     function bidAsk(mid,key){
       const s = SPREAD[key] ?? 0.002;
       return [mid*(1-s), mid*(1+s)];
+    }
+
+    function trendIcon(kind){
+      if(kind === 'up'){
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 18V6"></path><path d="M7 11l5-5 5 5"></path></svg>';
+      }
+      if(kind === 'down'){
+        return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12"></path><path d="M17 13l-5 5-5-5"></path></svg>';
+      }
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M15 8l4 4-4 4"></path></svg>';
     }
 
     async function refreshData(){
@@ -127,7 +186,6 @@
     function render(lang){
       currentLang = lang;
       const l = labels[lang];
-      document.getElementById('info1').textContent = l.info;
       document.getElementById('buy1').textContent = l.buy;
       document.getElementById('sell1').textContent = l.sell;
 
@@ -138,22 +196,31 @@
         const prev = prevLatest?.[k];
         const dec = (k==='usd'||k==='eur'||k==='goldOns'||k==='goldOnsUsd'||k==='goldOnsEur'||k==='silvOns') ? 4 : 2;
         if(!liveOk || !Number.isFinite(base)){
-          return `<tr><td class="asset">${l.n[k]}</td><td class="num">NaN</td><td class="num">NaN</td></tr>`;
+          return `<tr><td class="asset">${l.n[k]}</td><td class="num">--</td><td class="num">--</td></tr>`;
         }
         const [b,a] = bidAsk(base,k);
-        let cls='flat', arrow='→';
+        let cls='flat';
         if(Number.isFinite(prev)){
-          if(base > prev){ cls='up'; arrow='▲'; }
-          else if(base < prev){ cls='down'; arrow='▼'; }
+          if(base > prev){ cls='up'; }
+          else if(base < prev){ cls='down'; }
         }
-        return `<tr><td class="asset">${l.n[k]}</td><td class="num"><span class="price-cell"><span class="trend ${cls}">${arrow}</span><span class="price-val">${fmt(b,dec)}</span></span></td><td class="num"><span class="price-cell"><span class="trend ${cls}">${arrow}</span><span class="price-val">${fmt(a,dec)}</span></span></td></tr>`;
+        return `<tr><td class="asset">${l.n[k]}</td><td class="num"><span class="price-cell"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(b,dec)}</span></span></td><td class="num"><span class="price-cell"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(a,dec)}</span></span></td></tr>`;
       }).join('');
 
       document.getElementById('tbody1').innerHTML = renderRows(rows);
 
       const st = document.getElementById('liveStatus');
-      st.textContent = `Përditësuar ${new Date().toLocaleTimeString('sq-AL')}`;
-      st.style.color = '#2F6666';
+      if(liveOk){
+        st.textContent = `Përditësuar ${new Date().toLocaleTimeString('sq-AL')}`;
+        st.style.color = '#2F6666';
+        st.style.background = 'rgba(255,255,255,.7)';
+        st.style.borderColor = 'rgba(47,102,102,.14)';
+      } else {
+        st.textContent = 'Lidhja me tregun nuk u ngarkua';
+        st.style.color = '#8b3a3a';
+        st.style.background = 'rgba(255,244,244,.82)';
+        st.style.borderColor = 'rgba(180,66,66,.18)';
+      }
 
       document.documentElement.lang = lang;
     }
