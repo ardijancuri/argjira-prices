@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="sq">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,16 +10,11 @@
     html,body{min-height:100%;background:#f1ecdf}
     body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;background:linear-gradient(180deg,#fbf8f1 0%,#f1ecdf 100%);background-repeat:no-repeat;background-size:cover;background-attachment:fixed;color:var(--text)}
     .wrap{max-width:1160px;margin:0 auto;padding:26px 18px 30px}
-    .top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+    .top{display:flex;justify-content:flex-start;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
     .brand{display:flex;align-items:center;justify-content:flex-start}
-    .top-right{display:flex;justify-content:flex-end;align-items:center}
-    .langs{display:flex;gap:8px;justify-content:flex-end;align-items:center}
     .status-bottom-wrap{display:flex;justify-content:center;margin:16px 0 0}
-    .lang{height:34px;line-height:1;border:1px solid var(--border);background:var(--panel);color:#243042;padding:0 12px;border-radius:999px;cursor:pointer;transition:.2s ease;box-shadow:0 2px 8px rgba(15,23,42,.05);display:inline-flex;align-items:center}
-    .lang:hover{transform:translateY(-1px);border-color:#2F6666;color:#2F6666}
-    .lang.active{background:linear-gradient(180deg,#3b7d7d,#2F6666);color:#fff;font-weight:700;border-color:#2F6666;box-shadow:0 4px 12px rgba(47,102,102,.35)}
     .live-status{height:34px;line-height:1;margin:0;color:#2F6666;font-size:12px;background:var(--panel);display:inline-flex;align-items:center;padding:0 12px;border:1px solid var(--border);border-radius:999px;box-shadow:0 2px 8px rgba(15,23,42,.04);font-weight:600;letter-spacing:.02em;white-space:nowrap}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
     .card{background:var(--glass);border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:0 12px 28px rgba(22,34,55,.07);padding:0 10px 10px}
     .head{padding:14px 8px 6px;font-size:13px;color:var(--muted);background:transparent;font-weight:600}
     table{width:100%;border-collapse:separate;border-spacing:0 10px}
@@ -40,8 +35,8 @@
     .trend.up{color:#16a34a}
     .trend.down{color:#dc2626}
     .trend.flat{color:#9aa7bd}
-    @media (max-width:900px){.grid{grid-template-columns:1fr}.wrap{padding:20px 12px 24px}.card{padding:0 8px 8px}.top{flex-wrap:wrap;align-items:center}.top-right{margin-left:auto}.langs{justify-content:flex-end}}
-    @media (max-width:520px){.langs{gap:6px}.lang,.live-status{height:32px;padding:0 10px;font-size:11px}tbody td{padding:11px 10px}thead th{padding:0 10px 2px}.price-cell{min-width:82px;gap:4px}}
+    @media (max-width:900px){.wrap{padding:20px 12px 24px}.card{padding:0 8px 8px}.top{flex-wrap:wrap;align-items:center}}
+    @media (max-width:520px){.live-status{height:32px;padding:0 10px;font-size:11px}tbody td{padding:11px 10px}thead th{padding:0 10px 2px}.price-cell{min-width:82px;gap:4px}}
   </style>
 </head>
 <body>
@@ -54,57 +49,38 @@
           <path d="M95.609 6.25606H98.7038L97.15 3.50985L95.609 6.25606ZM96.1943 0.678036H98.102L103.5 10.2879H100.971L99.5731 7.84426H94.7283L93.3662 10.2879H90.8566L96.1943 0.678036Z"></path>
         </svg>
       </div>
-      <div class="top-right">
-        <div class="langs">
-          <button class="lang" data-lang="mk">MK</button>
-          <button class="lang" data-lang="sq">SQ</button>
-          <button class="lang active" data-lang="tr">TR</button>
-        </div>
-      </div>
     </div>
 
     <div class="grid">
       <div class="card">
-        <div class="head" id="info1">Bilgi amaçlıdır</div>
+        <div class="head" id="info1">Vetëm për informim</div>
         <table>
-          <thead><tr><th></th><th id="buy1">Alış</th><th id="sell1">Satış</th></tr></thead>
+          <thead><tr><th></th><th id="buy1">Blerje</th><th id="sell1">Shitje</th></tr></thead>
           <tbody id="tbody1"></tbody>
-        </table>
-      </div>
-
-      <div class="card">
-        <div class="head" id="info2">Bilgi amaçlıdır</div>
-        <table>
-          <thead><tr><th></th><th id="buy2">Alış</th><th id="sell2">Satış</th></tr></thead>
-          <tbody id="tbody2"></tbody>
         </table>
       </div>
     </div>
 
     <div class="status-bottom-wrap">
-      <div id="liveStatus" class="live-status">Updated --:--:--</div>
+      <div id="liveStatus" class="live-status">Përditësuar --:--:--</div>
     </div>
   </div>
 
   <script>
     const labels = {
-      tr: {title:'Fiyat Ekranı', info:'Bilgi amaçlıdır', buy:'Alış', sell:'Satış',
-        n:{usd:'USD/TL',eur:'EUR/TL',goldTl:'Altın/TL',silvKgTl:'GümüşKG/TL',goldOns:'Altın/ONS',goldKgUsd:'AltınKG/USD',goldKgEur:'AltınKG/EUR',silvOns:'Gümüş/ONS',silvKgUsd:'GümüşKG/USD',silvKgEur:'GümüşKG/EUR'}},
-      sq: {title:'Ekrani i Çmimeve', info:'Vetëm për informim', buy:'Blerje', sell:'Shitje',
-        n:{usd:'USD/TL',eur:'EUR/TL',goldTl:'Ar/TL',silvKgTl:'ArgjendKG/TL',goldOns:'Ar/ONS',goldKgUsd:'ArKG/USD',goldKgEur:'ArKG/EUR',silvOns:'Argjend/ONS',silvKgUsd:'ArgjendKG/USD',silvKgEur:'ArgjendKG/EUR'}},
-      mk: {title:'Екран за цени', info:'Информативно', buy:'Купување', sell:'Продажба',
-        n:{usd:'USD/TL',eur:'EUR/TL',goldTl:'Злато/TL',silvKgTl:'СреброКГ/TL',goldOns:'Злато/ONS',goldKgUsd:'ЗлатоКГ/USD',goldKgEur:'ЗлатоКГ/EUR',silvOns:'Сребро/ONS',silvKgUsd:'СреброКГ/USD',silvKgEur:'СреброКГ/EUR'}}
+      sq: {title:'Ekrani i Cmimeve', info:'Vetëm për informim', buy:'Blerje', sell:'Shitje',
+        n:{usd:'USD/TL',eur:'EUR/TL',goldTl:'Ar/TL',silvKgTl:'ArgjendKG/TL',goldOns:'Ar/ONS',goldOnsUsd:'ArONS/USD',goldOnsEur:'ArONS/EUR',goldKgUsd:'ArKG/USD',goldKgEur:'ArKG/EUR',silvOns:'Argjend/ONS',silvKgUsd:'ArgjendKG/USD',silvKgEur:'ArgjendKG/EUR'}},
     };
 
-    const SPREAD = { usd:0.0016, eur:0.0020, goldTl:0.0035, silvKgTl:0.04, goldOns:0.00015, goldKgUsd:0.0025, goldKgEur:0.0028, silvOns:0.00035, silvKgUsd:0.034, silvKgEur:0.05 };
+    const SPREAD = { usd:0.0016, eur:0.0020, goldTl:0.0035, silvKgTl:0.04, goldOns:0.00015, goldOnsUsd:0.00015, goldOnsEur:0.00015, goldKgUsd:0.0025, goldKgEur:0.0028, silvOns:0.00035, silvKgUsd:0.034, silvKgEur:0.05 };
     const OUNCE_TO_KG = 32.1507466;
     let latest = null;
     let prevLatest = null;
-    let currentLang = 'tr';
+    let currentLang = 'sq';
     let liveOk = false;
 
     function fmt(value, decimals=2){
-      return Number(value).toLocaleString('tr-TR',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+      return Number(value).toLocaleString('sq-AL',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
     }
 
     function bidAsk(mid,key){
@@ -134,6 +110,8 @@
         goldTl: (xau/31.1034768)*usdtry,
         silvKgTl: (xag*OUNCE_TO_KG)*usdtry,
         goldOns: xau,
+        goldOnsUsd: xau,
+        goldOnsEur: xau*eurusd,
         goldKgUsd: xau*OUNCE_TO_KG,
         goldKgEur: xau*OUNCE_TO_KG*eurusd,
         silvOns: xag,
@@ -149,17 +127,16 @@
     function render(lang){
       currentLang = lang;
       const l = labels[lang];
-      ['info1','info2'].forEach(id=>document.getElementById(id).textContent=l.info);
-      ['buy1','buy2'].forEach(id=>document.getElementById(id).textContent=l.buy);
-      ['sell1','sell2'].forEach(id=>document.getElementById(id).textContent=l.sell);
+      document.getElementById('info1').textContent = l.info;
+      document.getElementById('buy1').textContent = l.buy;
+      document.getElementById('sell1').textContent = l.sell;
 
-      const left = ['usd','eur','goldTl','silvKgTl','goldOns'];
-      const right = ['goldKgUsd','goldKgEur','silvOns','silvKgUsd','silvKgEur'];
+      const rows = ['goldOnsUsd','goldOnsEur','goldKgUsd','goldKgEur','silvKgEur'];
 
       const renderRows = arr => arr.map(k=>{
         const base = latest?.[k];
         const prev = prevLatest?.[k];
-        const dec = (k==='usd'||k==='eur'||k==='goldOns'||k==='silvOns') ? 4 : 2;
+        const dec = (k==='usd'||k==='eur'||k==='goldOns'||k==='goldOnsUsd'||k==='goldOnsEur'||k==='silvOns') ? 4 : 2;
         if(!liveOk || !Number.isFinite(base)){
           return `<tr><td class="asset">${l.n[k]}</td><td class="num">NaN</td><td class="num">NaN</td></tr>`;
         }
@@ -172,35 +149,18 @@
         return `<tr><td class="asset">${l.n[k]}</td><td class="num"><span class="price-cell"><span class="trend ${cls}">${arrow}</span><span class="price-val">${fmt(b,dec)}</span></span></td><td class="num"><span class="price-cell"><span class="trend ${cls}">${arrow}</span><span class="price-val">${fmt(a,dec)}</span></span></td></tr>`;
       }).join('');
 
-      document.getElementById('tbody1').innerHTML = renderRows(left);
-      document.getElementById('tbody2').innerHTML = renderRows(right);
+      document.getElementById('tbody1').innerHTML = renderRows(rows);
 
       const st = document.getElementById('liveStatus');
-      st.textContent = `Updated ${new Date().toLocaleTimeString('en-GB')}`;
+      st.textContent = `Përditësuar ${new Date().toLocaleTimeString('sq-AL')}`;
       st.style.color = '#2F6666';
 
-      document.querySelectorAll('.lang').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang));
       document.documentElement.lang = lang;
     }
 
-    const langOrder = ['mk','sq','tr'];
-    let langIdx = 0;
-
-    document.querySelectorAll('.lang').forEach(btn=>btn.addEventListener('click',()=>{
-      currentLang = btn.dataset.lang;
-      langIdx = Math.max(0, langOrder.indexOf(currentLang));
-      render(currentLang);
-    }));
-
     refreshData().catch(()=>{ liveOk = false; latest = {}; render(currentLang); });
     setInterval(()=>refreshData().catch(()=>{ liveOk = false; latest = {}; render(currentLang); }),15000);
-
-    setInterval(()=>{
-      langIdx = (langIdx + 1) % langOrder.length;
-      render(langOrder[langIdx]);
-    },15000);
-
-    render('tr');
+    render('sq');
   </script>
 </body>
 </html>
