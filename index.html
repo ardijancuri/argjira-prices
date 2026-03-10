@@ -30,27 +30,27 @@
     .board h2{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-size:42px;line-height:.95;font-weight:600;letter-spacing:-.03em}
     .table-wrap{padding:14px 26px}
     table{width:100%;border-collapse:separate;border-spacing:0 10px}
-    thead th{padding:0 16px 4px;border:none;text-align:left;font-size:11px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+    thead th{padding:0 18px 8px;border:none;text-align:left;font-size:16px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
     thead th:nth-child(2), thead th:nth-child(3){text-align:left}
-    tbody td{padding:16px;text-align:left;background:rgba(255,255,255,.72);border-top:1px solid rgba(114,90,54,.12);border-bottom:1px solid rgba(114,90,54,.12);font-variant-numeric:tabular-nums;transition:transform .2s ease,background .2s ease,border-color .2s ease}
+    tbody td{padding:24px 18px;text-align:left;background:rgba(255,255,255,.72);border-top:1px solid rgba(114,90,54,.12);border-bottom:1px solid rgba(114,90,54,.12);font-variant-numeric:tabular-nums;transition:transform .2s ease,background .2s ease,border-color .2s ease;font-size:clamp(1.4rem,2.4vw,2.2rem)}
     tbody td:first-child{border-left:1px solid rgba(114,90,54,.12);border-top-left-radius:18px;border-bottom-left-radius:18px;font-weight:700}
     tbody td:last-child{border-right:1px solid rgba(114,90,54,.12);border-top-right-radius:18px;border-bottom-right-radius:18px}
     tbody tr:hover td{background:#fffdf9;border-color:rgba(187,147,98,.32);transform:translateY(-1px)}
     tbody td:nth-child(2), tbody td:nth-child(3){text-align:left}
     tbody td:nth-child(2){color:var(--buy);font-weight:800}
     tbody td:nth-child(3){color:var(--sell);font-weight:800}
-    .asset{font-weight:800;color:var(--text);letter-spacing:.01em}
+    .asset{font-weight:800;color:var(--text);letter-spacing:.01em;font-size:clamp(1.4rem,2.3vw,2.1rem)}
     .num{font-variant-numeric:tabular-nums}
-    .price-cell{display:inline-flex;align-items:center;justify-content:flex-start;gap:8px;min-width:112px}
-    .price-val{display:inline-block}
-    .trend{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:999px;line-height:1;margin:0;vertical-align:middle;background:rgba(114,90,54,.08);border:1px solid rgba(114,90,54,.1);flex:0 0 28px}
-    .trend svg{width:16px;height:16px;display:block;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;fill:none}
+    .price-cell{display:inline-flex;align-items:center;justify-content:flex-start;gap:12px;min-width:180px}
+    .price-val{display:inline-block;font-size:clamp(1.45rem,2.5vw,2.3rem);line-height:1.05}
+    .trend{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:999px;line-height:1;margin:0;vertical-align:middle;background:rgba(114,90,54,.08);border:1px solid rgba(114,90,54,.1);flex:0 0 40px}
+    .trend svg{width:22px;height:22px;display:block;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none}
     .trend.up{color:#168a55;background:rgba(22,138,85,.12);border-color:rgba(22,138,85,.18)}
     .trend.down{color:#c03939;background:rgba(192,57,57,.12);border-color:rgba(192,57,57,.18)}
     .trend.flat{color:#7c8aa0;background:rgba(124,138,160,.12);border-color:rgba(124,138,160,.18)}
     @media (max-width:1080px){.board-head{align-items:flex-start}}
-    @media (max-width:720px){.wrap{padding:16px 12px 24px}.board{border-radius:24px}.board-head{padding:22px 18px 16px}.board h2{font-size:34px}.table-wrap{padding:10px}}
-    @media (max-width:520px){.live-status{min-height:34px;padding:0 11px;font-size:11px}thead th{padding:0 12px 4px}tbody td{padding:13px 12px;font-size:13px}.price-cell{min-width:86px;gap:6px}.trend{width:24px;height:24px;flex-basis:24px}.trend svg{width:14px;height:14px}}
+    @media (max-width:720px){.wrap{padding:16px 12px 24px}.board{border-radius:24px}.board-head{padding:22px 18px 16px}.board h2{font-size:34px}.table-wrap{padding:10px}thead th{font-size:13px;padding:0 14px 6px}tbody td{padding:18px 14px;font-size:1.15rem}.asset{font-size:1.15rem}.price-val{font-size:1.2rem}.price-cell{min-width:128px;gap:10px}.trend{width:34px;height:34px;flex-basis:34px}.trend svg{width:18px;height:18px}}
+    @media (max-width:520px){.live-status{min-height:34px;padding:0 11px;font-size:11px}thead th{padding:0 12px 4px;font-size:11px}tbody td{padding:15px 12px;font-size:1rem}.asset{font-size:1rem}.price-val{font-size:1.05rem}.price-cell{min-width:100px;gap:8px}.trend{width:28px;height:28px;flex-basis:28px}.trend svg{width:15px;height:15px}}
   </style>
 </head>
 <body>
