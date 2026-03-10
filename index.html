@@ -98,7 +98,10 @@
     let liveOk = false;
 
     function fmt(value, decimals=2){
-      return Number(value).toLocaleString('sq-AL',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
+      const fixed = Number(value).toFixed(decimals);
+      const parts = fixed.split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return parts.join('.');
     }
 
     function bidAsk(mid,key){
