@@ -37,13 +37,14 @@
     tbody td:first-child{border-left:1px solid rgba(114,90,54,.12);border-top-left-radius:18px;border-bottom-left-radius:18px;font-weight:700}
     tbody td:last-child{border-right:1px solid rgba(114,90,54,.12);border-top-right-radius:18px;border-bottom-right-radius:18px}
     tbody tr:hover td{background:#fffdf9;border-color:rgba(187,147,98,.32);transform:translateY(-1px)}
-    tbody td:nth-child(2), tbody td:nth-child(3){text-align:left}
-    tbody td:nth-child(2){color:var(--buy);font-weight:800}
-    tbody td:nth-child(3){color:var(--sell);font-weight:800}
+    tbody td:nth-child(2), tbody td:nth-child(3){text-align:left;font-weight:800}
     .asset{font-weight:800;color:var(--text);letter-spacing:.01em;font-size:clamp(1.6rem,2.7vw,2.4rem)}
     .num{font-variant-numeric:tabular-nums}
     .price-cell{display:inline-flex;align-items:center;justify-content:flex-start;gap:12px;min-width:180px}
-    .price-val{display:inline-block;font-size:clamp(1.7rem,2.9vw,2.6rem);line-height:1.05}
+    .price-val{display:inline-block;font-size:clamp(1.7rem,2.9vw,2.6rem);line-height:1.05;transition:color .2s ease}
+    .price-cell.up .price-val{color:#168a55}
+    .price-cell.down .price-val{color:#c03939}
+    .price-cell.flat .price-val{color:#5f6672}
     .trend{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:999px;line-height:1;margin:0;vertical-align:middle;background:rgba(114,90,54,.08);border:1px solid rgba(114,90,54,.1);flex:0 0 40px}
     .trend svg{width:22px;height:22px;display:block;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;fill:none}
     .trend.up{color:#168a55;background:rgba(22,138,85,.12);border-color:rgba(22,138,85,.18)}
@@ -176,7 +177,7 @@
           if(base > prev){ cls='up'; }
           else if(base < prev){ cls='down'; }
         }
-        return `<tr><td class="asset">${l.n[k]}</td><td class="num"><span class="price-cell"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(b,dec)}</span></span></td><td class="num"><span class="price-cell"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(a,dec)}</span></span></td></tr>`;
+        return `<tr><td class="asset">${l.n[k]}</td><td class="num"><span class="price-cell ${cls}"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(b,dec)}</span></span></td><td class="num"><span class="price-cell ${cls}"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(a,dec)}</span></span></td></tr>`;
       }).join('');
 
       document.getElementById('tbody1').innerHTML = renderRows(rows);
@@ -198,7 +199,7 @@
     }
 
     refreshData().catch(()=>{ liveOk = false; latest = {}; render(currentLang); });
-    setInterval(()=>refreshData().catch(()=>{ liveOk = false; latest = {}; render(currentLang); }),15000);
+    setInterval(()=>refreshData().catch(()=>{ liveOk = false; latest = {}; render(currentLang); }),10000);
     render('sq');
   </script>
 </body>
