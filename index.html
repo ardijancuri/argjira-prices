@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Argjira • Tabela e Çmimeve</title>
+  <title>Argjira - Tabela e Cmimeve</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -62,7 +62,7 @@
       <section class="board">
         <div class="board-head">
           <div class="board-title">
-            <h2>Çmimet Aktuale</h2>
+            <h2>Cmimet Aktuale</h2>
           </div>
           <div class="brand">
             <svg viewBox="0 0 104 11" fill="#2F6666" xmlns="http://www.w3.org/2000/svg" height="20px" aria-label="Argjira logo">
@@ -72,7 +72,7 @@
             </svg>
           </div>
           <div class="board-status">
-            <div id="liveStatus" class="live-status">Përditësuar --:--:--</div>
+            <div id="liveStatus" class="live-status">Perditesuar --:--:--</div>
           </div>
         </div>
         <div class="table-wrap">
@@ -87,16 +87,45 @@
 
   <script>
     const labels = {
-      sq: {title:'Ekrani i Cmimeve', info:'Vetëm për informim', buy:'Blerje', sell:'Shitje',
-        n:{usd:'USD/TL',eur:'EUR/TL',goldTl:'Ar/TL',silvKgTl:'ArgjendKG/TL',goldOns:'Ar/ONS',goldOnsUsd:'ArONS/USD',goldOnsEur:'ArONS/EUR',goldKgUsd:'ArKG/USD',goldKgEur:'ArKG/EUR',silvOns:'Argjend/ONS',silvKgUsd:'ArgjendKG/USD',silvKgEur:'ArgjendKG/EUR'}},
+      sq: {
+        title: 'Ekrani i Cmimeve',
+        info: 'Vetem per informim',
+        buy: 'Blerje',
+        sell: 'Shitje',
+        n: {
+          goldKgUsd: 'ArKG/USD',
+          goldKgEur: 'ArKG/EUR',
+          silvOns: 'Argjend/ONS',
+          silvKgUsd: 'ArgjendKG/USD',
+          silvKgEur: 'ArgjendKG/EUR'
+        }
+      }
     };
 
-    const SPREAD = { usd:0.0016, eur:0.0020, goldTl:0.0035, silvKgTl:0.04, goldOns:0.00015, goldOnsUsd:0.00015, goldOnsEur:0.00015, goldKgUsd:0.0025, goldKgEur:0.0028, silvOns:0.00035, silvKgUsd:0.034, silvKgEur:0.05 };
-    const OUNCE_TO_KG = 32.1507466;
+    const DISPLAY_ROWS = ['goldKgUsd','goldKgEur','silvOns','silvKgUsd','silvKgEur'];
+    const ROW_DECIMALS = { silvOns:4 };
+    const SITE_API_URL = `${window.location.origin}/api/prices`;
+    const LOCAL_API_URL = `${window.location.protocol}//${window.location.hostname || '127.0.0.1'}:3000/api/prices`;
+    const API_URL = (() => {
+      const host = window.location.hostname || '127.0.0.1';
+      const isLocalPreview = (host === '127.0.0.1' || host === 'localhost') && window.location.port !== '3000';
+      return isLocalPreview ? LOCAL_API_URL : SITE_API_URL;
+    })();
+    const PROVIDER_LABEL = {
+      'nadirdoviz-html':'Nadir Live',
+      'nadirdoviz-dom':'Nadir Live',
+      'nadirdoviz-browser':'Nadir Live',
+      'nadirdoviz-internal':'Nadir Live',
+      'nadirdoviz-browserless':'Nadir Live'
+    };
+
     let latest = null;
     let prevLatest = null;
     let currentLang = 'sq';
     let liveOk = false;
+    let providerName = '';
+    let lastUpdatedAt = null;
+    let apiMeta = { stale:false, fetchedAt:null, lastSuccessAt:null };
 
     function fmt(value, decimals=2){
       const fixed = Number(value).toFixed(decimals);
@@ -105,9 +134,13 @@
       return parts.join('.');
     }
 
-    function bidAsk(mid,key){
-      const s = SPREAD[key] ?? 0.002;
-      return [mid*(1-s), mid*(1+s)];
+    function normalizeApiRow(row, key){
+      const buy = Number(row?.buy);
+      const sell = Number(row?.sell);
+      if(!Number.isFinite(buy) || !Number.isFinite(sell)){
+        throw new Error(`API row missing ${key}`);
+      }
+      return { buy, sell, mid:(buy + sell) / 2 };
     }
 
     function trendIcon(kind){
@@ -120,39 +153,37 @@
       return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M15 8l4 4-4 4"></path></svg>';
     }
 
-    async function refreshData(){
-      const [goldResp, silverResp, fxResp] = await Promise.all([
-        fetch('https://api.gold-api.com/price/XAU'),
-        fetch('https://api.gold-api.com/price/XAG'),
-        fetch('https://open.er-api.com/v6/latest/USD')
-      ]);
-      const gold = await goldResp.json();
-      const silver = await silverResp.json();
-      const fx = await fxResp.json();
-
-      const xau = Number(gold.price); // USD/oz
-      const xag = Number(silver.price); // USD/oz
-      const usdtry = Number(fx.rates.TRY);
-      const eurusd = Number(fx.rates.EUR);
-      const eurtry = usdtry / eurusd;
-
-      const values = {
-        usd: usdtry,
-        eur: eurtry,
-        goldTl: (xau/31.1034768)*usdtry,
-        silvKgTl: (xag*OUNCE_TO_KG)*usdtry,
-        goldOns: xau,
-        goldOnsUsd: xau,
-        goldOnsEur: xau*eurusd,
-        goldKgUsd: xau*OUNCE_TO_KG,
-        goldKgEur: xau*OUNCE_TO_KG*eurusd,
-        silvOns: xag,
-        silvKgUsd: xag*OUNCE_TO_KG,
-        silvKgEur: xag*OUNCE_TO_KG*eurusd
+    async function loadFromLocalApi(){
+      const resp = await fetch(API_URL);
+      if(!resp.ok){
+        throw new Error(`Local API HTTP ${resp.status}`);
+      }
+      const data = await resp.json();
+      const rows = {};
+      for(const key of DISPLAY_ROWS){
+        rows[key] = normalizeApiRow(data?.rows?.[key], key);
+      }
+      return {
+        provider:data?.provider || 'nadirdoviz-dom',
+        stale:Boolean(data?.stale),
+        fetchedAt:data?.fetchedAt ? new Date(data.fetchedAt) : null,
+        lastSuccessAt:data?.lastSuccessAt ? new Date(data.lastSuccessAt) : null,
+        rows
       };
+    }
+
+    async function refreshData(){
+      const result = await loadFromLocalApi();
       prevLatest = latest;
-      latest = values;
-      liveOk = true;
+      latest = result.rows;
+      providerName = result.provider;
+      apiMeta = {
+        stale:result.stale,
+        fetchedAt:result.fetchedAt,
+        lastSuccessAt:result.lastSuccessAt
+      };
+      lastUpdatedAt = result.fetchedAt ?? new Date();
+      liveOk = !result.stale;
       render(currentLang);
     }
 
@@ -162,34 +193,55 @@
       document.getElementById('buy1').textContent = l.buy;
       document.getElementById('sell1').textContent = l.sell;
 
-      const rows = ['goldOnsUsd','goldOnsEur','goldKgUsd','goldKgEur','silvKgEur'];
-
-      const renderRows = arr => arr.map(k=>{
-        const base = latest?.[k];
-        const prev = prevLatest?.[k];
-        const dec = 2;
-        if(!liveOk || !Number.isFinite(base)){
-          return `<tr><td class="asset">${l.n[k]}</td><td class="num">--</td><td class="num">--</td></tr>`;
+      const renderRows = arr => arr.map(key => {
+        const row = latest?.[key];
+        const prev = prevLatest?.[key]?.mid;
+        const base = row?.mid;
+        const dec = ROW_DECIMALS[key] ?? 2;
+        if(!Number.isFinite(base) || !Number.isFinite(row?.buy) || !Number.isFinite(row?.sell)){
+          return `<tr><td class="asset">${l.n[key]}</td><td class="num">--</td><td class="num">--</td></tr>`;
         }
-        const [b,a] = bidAsk(base,k);
-        let cls='flat';
+        let cls = 'flat';
         if(Number.isFinite(prev)){
-          if(base > prev){ cls='up'; }
-          else if(base < prev){ cls='down'; }
+          if(base > prev){ cls = 'up'; }
+          else if(base < prev){ cls = 'down'; }
         }
-        return `<tr><td class="asset">${l.n[k]}</td><td class="num"><span class="price-cell ${cls}"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(b,dec)}</span></span></td><td class="num"><span class="price-cell ${cls}"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(a,dec)}</span></span></td></tr>`;
+        return `<tr><td class="asset">${l.n[key]}</td><td class="num"><span class="price-cell ${cls}"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(row.buy,dec)}</span></span></td><td class="num"><span class="price-cell ${cls}"><span class="trend ${cls}">${trendIcon(cls)}</span><span class="price-val">${fmt(row.sell,dec)}</span></span></td></tr>`;
       }).join('');
 
-      document.getElementById('tbody1').innerHTML = renderRows(rows);
+      document.getElementById('tbody1').innerHTML = renderRows(DISPLAY_ROWS);
 
       const st = document.getElementById('liveStatus');
       if(liveOk){
-        st.textContent = `Përditësuar ${new Date().toLocaleString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}`;
+        const stamp = (apiMeta.fetchedAt ?? lastUpdatedAt ?? new Date()).toLocaleString('en-US', {
+          month: '2-digit',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        });
+        st.textContent = `Perditesuar ${stamp} | ${PROVIDER_LABEL[providerName] ?? providerName}`;
         st.style.color = '#2F6666';
         st.style.background = 'rgba(255,255,255,.7)';
         st.style.borderColor = 'rgba(47,102,102,.14)';
+      } else if(latest){
+        const staleStamp = (apiMeta.lastSuccessAt ?? apiMeta.fetchedAt ?? lastUpdatedAt ?? new Date()).toLocaleString('en-US', {
+          month: '2-digit',
+          day: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        });
+        st.textContent = `Vlerat e fundit nga API ${staleStamp} | ${PROVIDER_LABEL[providerName] ?? providerName}`;
+        st.style.color = '#8b6a32';
+        st.style.background = 'rgba(255,249,236,.86)';
+        st.style.borderColor = 'rgba(183,138,53,.18)';
       } else {
-        st.textContent = 'Lidhja me tregun nuk u ngarkua';
+        st.textContent = 'Cmimet nga API nuk u ngarkuan';
         st.style.color = '#8b3a3a';
         st.style.background = 'rgba(255,244,244,.82)';
         st.style.borderColor = 'rgba(180,66,66,.18)';
@@ -198,8 +250,20 @@
       document.documentElement.lang = lang;
     }
 
-    refreshData().catch(()=>{ liveOk = false; latest = {}; render(currentLang); });
-    setInterval(()=>refreshData().catch(()=>{ liveOk = false; latest = {}; render(currentLang); }),10000);
+    refreshData().catch(() => {
+      liveOk = false;
+      apiMeta.stale = true;
+      render(currentLang);
+    });
+
+    setInterval(() => {
+      refreshData().catch(() => {
+        liveOk = false;
+        apiMeta.stale = true;
+        render(currentLang);
+      });
+    }, 20000);
+
     render('sq');
   </script>
 </body>
